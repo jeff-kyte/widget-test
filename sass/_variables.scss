@@ -1,0 +1,47 @@
+/***********************************************
+                COLOUR NOTES
+light blue  #C7F7FF
+med blue    #89C0C9
+dark blue   #3a5E63
+
+light brown #C9A689
+dark brown  #7C593C
+
+light grey  #d4d4d4
+dark grey   #222
+
+                DEFAULTS
+***********************************************/
+@import url(https://fonts.googleapis.com/css?family=Cardo);
+@import url(https://fonts.googleapis.com/css?family=Josefin+Sans);
+
+/**************** VARIABLES ****************/
+$font-rem: 3.998rem;
+$ln-height: 1.6;
+
+$breaks: (
+    'mobile': 400px,
+    'small': 700px,
+    'medium': 900px,
+    'large': 1400px
+);
+$media_strings: build_media_strings(); // Build map of media query strings from $breaks
+$row-inner-med: 600px;
+$row-margin: 0 auto;
+
+// Global Placeholder variables:
+$global-placeholds: (); // List of placeholder names
+$gp-origin-break: nth(map-keys($breaks), 1); // Default size (ie: "mobile")
+$gp-break: $gp-origin-break; // Assigned to breakpoint name preceeding @content in media query mixin
+
+$sans-font: 'Josefin Sans', 'Trebuchet MS', Helvetica, sans-serif; /* default for whole page */
+$serif-font: Cardo, 'Palatino Linotype', 'Book Antiqua', Palatino, serif; /* serif for the headings */
+
+$light-blue: #C7F7FF;
+$med-blue: #89C0C9;
+$dark-blue: #3a5E63;
+$white: #fff;
+$light-brown: #C9A689;
+$dark-brown: #7C593C;
+$light-grey: #d4d4d4;
+$dark-grey: #222;
