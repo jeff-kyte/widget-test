@@ -32,10 +32,10 @@ var funkyBtn = (function() {
             btnGoBack(internalBtn);
         }, returnDelay);
         // Get button position and dimensions:
-        btnPageTop = parseInt(domBtn.offset().top, 10) - buffer;
-        btnPageLeft = parseInt(domBtn.offset().left, 10) - buffer;
-        btnWidth = domBtn.outerWidth() + (buffer * 2);
-        btnHeight = domBtn.outerHeight() + (buffer * 2);
+        btnPageTop = parseInt(domBtn.offset().top, 10);
+        btnPageLeft = parseInt(domBtn.offset().left, 10);
+        btnWidth = domBtn.outerWidth();
+        btnHeight = domBtn.outerHeight();
         btnMidX = Math.round(btnPageLeft + (btnWidth / 2));
         btnMidY = Math.round(btnPageTop + (btnHeight / 2));
         // Relativize mouse/touch coordinates:
@@ -44,6 +44,8 @@ var funkyBtn = (function() {
         // Line between button's center and cursor position: 
         if (relMouseX == 0) relMouseX = 0.0001; // Ensure there is a slope.
         slope = relMouseY / relMouseX;
+        
+        
         // Find points where said line intercepts button boundary with added buffer:
         btnInterY = slope * (btnWidth / 2);
         btnInterX = (btnHeight / 2) / slope;
@@ -70,6 +72,8 @@ var funkyBtn = (function() {
         if (Math.abs(relMouseY) > Math.abs(btnInterY)) vectorY = 0;
         if (Math.abs(vectorX) < 1) vectorX = 0;
         if (Math.abs(vectorY) < 1) vectorY = 0;
+        
+        
         // Finally translate button:
         setTimeout(function() { // 1ms delay avoids render cycle overlooking change.
             domBtn.css({
