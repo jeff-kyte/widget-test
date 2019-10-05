@@ -95,7 +95,7 @@ header {
             @include fsize-pad(1.414rem, 1rem 2rem);
             @include colors($dark-grey, $white);
             &:hover {
-                font-weight: 700;
+                /*font-weight: 700;*/
                 color: $dark-brown;
             }
         }
