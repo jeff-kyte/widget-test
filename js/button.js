@@ -3,9 +3,9 @@ var funkyBtn = (function() {
     
     /*** CUSTOM VARIABLES ***/
     var animEasing = 'linear'; // jQuery animate() easing property.
-    var buffer = 0;// Pad the button from the mouse by this many pixels.
+    var buffer = 5; // Pad the button from the mouse by this many pixels.
     var returnDelay = 500; // Milliseconds before moved buttons start to return.
-    var resetOnResize = true; // Recalculates button positions when page is resized.
+    var resetOnResize = true; // Recalculates button positions when page is resized, responsive.
     if (isTouchScreen) {
         buffer += 20;
         returnDelay = 100;
@@ -13,7 +13,6 @@ var funkyBtn = (function() {
     
     // Tracking active buttons:
     var btnList = [], currentMousePos = {}, isInitialized = false, resizingPage = null;
-    
     
     // Call to initialize or reset the script:
     var init = function() {
@@ -128,12 +127,11 @@ var funkyBtn = (function() {
     }
 	// Moves DOM button element away from point on page:
     function runAway(domBtn, contactPoint = currentMousePos) {
-		console.log('*******************************');
         if (resizingPage) return;
         // Element position and dimension variables:
         var btnPageTop, btnPageLeft, btnWidth, btnHeight, btnMidX, btnMidY, relMouseX, relMouseY;
         // Used to calculate vector:
-        var slope, btnInterY1, btnInterY2, btnInterX1, btnInterX2, tempX, tempY, vectorX, vectorY;
+        var slope, btnInterY, btnInterX, vectorX, vectorY;
         // Identify button using class name "funkyBtnNo(x)":
         var internalBtn = btnList[parseInt(domBtn.attr('class').match(/funkyBtnNo(\d+)/)[1], 10)];
         internalBtn.running = true;
@@ -149,48 +147,28 @@ var funkyBtn = (function() {
         btnPageLeft = parseInt(domBtn.offset().left, 10);
         btnWidth = domBtn.outerWidth();
         btnHeight = domBtn.outerHeight();
-		console.log('button width: ' + btnWidth + ', height: ' + btnHeight);
         btnMidX = Math.round(btnPageLeft + (btnWidth / 2));
         btnMidY = Math.round(btnPageTop + (btnHeight / 2));
         // Relativize mouse/touch coordinates:
         relMouseX = contactPoint.pageX - btnMidX;
         relMouseY = contactPoint.pageY - btnMidY;
-		console.log('relMouseX: ' + relMouseX + ', relMouseY: ' + relMouseY);
+		
         // Line between button's center and cursor position: 
         if (relMouseX == 0) relMouseX = 0.0001; // Ensure there is a slope.
         slope = relMouseY / relMouseX;
-		console.log('slope: ' + slope);
 		
         // Find points where said line intercepts button boundary with added buffer:
-		btnInterX1 = slope * ((btnWidth / 2) + buffer); // y coord of interception point with side
-		console.log('btnInterY init: ' + btnInterY1);
-		//if (relMouseX < 0) btnInterY1 *= -1;
-		//console.log('btnInterY adjusted: ' + btnInterY1);
-		btnInterY1 = ((btnHeight / 2) + buffer) / slope; // x coord of interception point with top/bottom
-		console.log('btnInterX init: ' + btnInterX1);
-		//if (relMouseY < 0) btnInterX1 *= -1;
-		//console.log('btnInterX adjusted: ' + btnInterX1);
+		btnInterX = slope * ((btnWidth / 2) + buffer);
+		btnInterY = ((btnHeight / 2) + buffer) / slope;
 		
 		// Calculate vector using closest intercept:
-        if (Math.abs(btnInterY1) >= Math.abs(btnInterX1)) { // X-intercept.
+        if (Math.abs(btnInterY) >= Math.abs(btnInterX)) { // X-intercept.
 			vectorX = relMouseX + (((btnWidth / 2) + buffer) * (relMouseX > 0 ? -1 : 1));
-            vectorY = relMouseY + (btnInterX1 * (relMouseX > 0 ? -1 : 1));
+            vectorY = relMouseY + (btnInterX * (relMouseX > 0 ? -1 : 1));
         } else { // Y-intercept.
 			vectorY = relMouseY + (((btnHeight / 2) + buffer) * (relMouseY > 0 ? -1 : 1));
-            vectorX = relMouseX + (btnInterY1 * (relMouseY > 0 ? -1 : 1));
+            vectorX = relMouseX + (btnInterY * (relMouseY > 0 ? -1 : 1));
         }
-		
-		
-        /*
-        // Remove vectors in case button is tempted to misbehave:
-        if (Math.abs(relMouseX) > Math.abs(tempX)) vectorX = 0;
-        if (Math.abs(relMouseX) > Math.abs(btnInterX)) vectorX = 0;
-        if (Math.abs(relMouseY) > Math.abs(tempY)) vectorY = 0;
-        if (Math.abs(relMouseY) > Math.abs(btnInterY)) vectorY = 0;
-        if (Math.abs(vectorX) < 1) vectorX = 0;
-        if (Math.abs(vectorY) < 1) vectorY = 0;
-		*/
-        
         // Finally translate button:
         setTimeout(function() { // 1ms delay avoids render cycle overlooking change.
             domBtn.css({
